@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users List</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      .filters {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+      select,
+      input {
+        padding: 5px;
+        font-size: 16px;
+      }
+      .pagination-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .pagination-controls input {
+        width: 80px;
+        text-align: center;
+      }
+      table {
+        width: 50%;
+        margin: 20px auto;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 10px;
+        text-align: center;
+      }
+      th {
+        background-color: lightgray;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Users List</h2>
+
+    <!-- Dropdown Filters -->
+    <div class="filters">
+      <label for="sort">Sort by:</label>
+      <select id="sort" onchange="fetchUsers()">
+        <option value="random">Random</option>
+        <option value="nameA">Name (A-Z)</option>
+        <option value="salaryLow">Salary (Low-High)</option>
+      </select>
+    </div>
+
+    <!-- Salary Range Inputs -->
+    <div class="filters">
+      <label
+        >Min Salary:
+        <input
+          type="number"
+          id="minSalaryInput"
+          min="0"
+          max="4000"
+          step="500"
+          value="0"
+          oninput="fetchUsers()"
+      /></label>
+      <label
+        >Max Salary:
+        <input
+          type="number"
+          id="maxSalaryInput"
+          min="0"
+          max="4000"
+          step="500"
+          value="4000"
+          oninput="fetchUsers()"
+      /></label>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <label
+        >Offset:
+        <input
+          type="number"
+          id="offsetInput"
+          min="0"
+          value="0"
+          oninput="fetchUsers()"
+      /></label>
+      <label
+        >Limit:
+        <input
+          type="number"
+          id="limitInput"
+          min="1"
+          value=""
+          oninput="fetchUsers()"
+      /></label>
+    </div>
+
+    <!-- Debugging: Show API request being made -->
+    <p id="apiUrlPreview" style="color: gray; font-size: 14px"></p>
+
+    <!-- Results Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Salary</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
+
+    <script>
+      function fetchUsers() {
+        const minSalary = document.getElementById("minSalaryInput").value;
+        const maxSalary = document.getElementById("maxSalaryInput").value;
+        const offset = document.getElementById("offsetInput").value;
+        const limit = document.getElementById("limitInput").value;
+        const sortOption = document.getElementById("sort").value;
+
+        let queryParams = new URLSearchParams();
+
+        if (minSalary) queryParams.append("min", minSalary);
+        if (maxSalary && maxSalary !== "4000")
+          queryParams.append("max", maxSalary);
+        if (offset) queryParams.append("offset", offset);
+        if (limit && limit !== "") queryParams.append("limit", limit);
+
+        if (sortOption === "nameA") {
+          queryParams.append("sort", "name");
+        } else if (sortOption === "salaryLow") {
+          queryParams.append("sort", "salary");
+        } else {
+          queryParams.append("sort", "random");
+        }
+
+        const apiUrl = `/users?${queryParams.toString()}`;
+        // document.getElementById(
+        //   "apiUrlPreview"
+        // ).innerText = `API Request: ${apiUrl}`;
+
+        fetch(apiUrl)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Fetched Data:", data.results);
+            displayUsers(data.results);
+          })
+          .catch((error) => console.error("Error fetching users:", error));
+      }
+
+      function displayUsers(users) {
+        const tableBody = document.getElementById("userTableBody");
+        tableBody.innerHTML = "";
+
+        if (!users.length) {
+          tableBody.innerHTML = `<tr><td colspan="2">No users found</td></tr>`;
+          return;
+        }
+
+        users.forEach((user) => {
+          const row = `<tr><td>${user.name}</td><td>${user.salary}</td></tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      window.onload = fetchUsers;
+    </script>
+  </body>
+</html>
