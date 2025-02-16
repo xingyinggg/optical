@@ -95,3 +95,16 @@ This endpoint allows users to upload a CSV file to update the database.
 - Multer - File upload handling.
 - CSV Parser - Reading CSV files.
 
+## 📌 Assumptions & Interpretations
+
+- The uploaded names via `/upload` must pass all validation checks (e.g., valid salary, correct format, unique names) before being available via the `/users` endpoint.
+- The application does not persist data beyond the current runtime session. All uploaded data is stored in memory and will be lost when the server restarts.
+
+## 📌 Architecture Decisions
+
+- **Multer**: Used for handling file uploads efficiently, temporarily storing them in the uploads/directory before processing.
+- **CSV-Parser**: Parses and validates CSV files, ensuring data integrity before it is added to memory.
+- **In-Memory Storage**:
+  - Chosen for simplicity in this project since there is no database.
+  - Once the server restarts, all uploaded data is lost.
+  - This could be replaced with Firebase, PostgreSQL, or MongoDB for production or scalable use to enable persistent data storage.
