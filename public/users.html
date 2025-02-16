@@ -55,7 +55,6 @@
     <div class="filters">
       <label for="sort">Sort by:</label>
       <select id="sort" onchange="fetchUsers()">
-        <option value="random">Random</option>
         <option value="nameA">Name (A-Z)</option>
         <option value="salaryLow">Salary (Low-High)</option>
       </select>
@@ -143,10 +142,7 @@
           queryParams.append("sort", "name");
         } else if (sortOption === "salaryLow") {
           queryParams.append("sort", "salary");
-        } else {
-          queryParams.append("sort", "random");
         }
-
         const apiUrl = `/users?${queryParams.toString()}`;
         // document.getElementById(
         //   "apiUrlPreview"
