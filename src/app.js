@@ -4,8 +4,7 @@ const uploadRoutes = require("./routes/upload");
 
 const app = express();
 
-// Middleware
-app.use(express.json()); // Parse JSON request bodies
+app.use(express.json()); 
 
 // Routes
 app.use("/users", usersRoutes);

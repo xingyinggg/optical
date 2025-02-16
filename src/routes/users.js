@@ -2,32 +2,22 @@ const express = require("express");
 const router = express.Router();
 const users = require("../data/userData");
 
-/**
- * GET /users
- * Query Params:
- * - min (minimum salary)
- * - max (maximum salary)
- * - offset (pagination start)
- * - limit (number of results)
- * - sort (name or salary, ascending only)
- */
-
 
 router.get("/", (req, res) => {
-  console.log("Current Users Data:", users);  // Debugging
+  console.log("Current Users Data:", users);
   try {
     let { min, max, offset, limit, sort } = req.query;
 
     // console.log(`Received API Request: min=${min}, max=${max}, offset=${offset}, limit=${limit}, sort=${sort}`);
 
 
-    // Convert query params to appropriate types with defaults
+    // convert query params to appropriate types with defaults
     min = min ? parseFloat(min) : 0;
     max = max ? parseFloat(max) : 4000;
     offset = offset ? parseInt(offset) : 0;
     limit = limit ? parseInt(limit) : undefined;
 
-    // Filter users based on min/max salary
+    // filter users based on min/max salary
     let filteredUsers = users
 
     if (min !== undefined) {
@@ -38,7 +28,7 @@ router.get("/", (req, res) => {
       filteredUsers = filteredUsers.filter(user => user.salary <= max);
     }
 
-    // Sorting logic
+    // sort
     if (sort) {
       if (sort === "name") {
         filteredUsers.sort((a, b) => a.name.localeCompare(b.name));
@@ -49,7 +39,7 @@ router.get("/", (req, res) => {
       }
     }
 
-    // Apply pagination
+    // pagination
     let paginatedUsers = filteredUsers.slice(offset, limit ? offset + limit : undefined);
 
     // console.log("Returning users: ", paginatedUsers);
