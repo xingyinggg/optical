@@ -85,7 +85,7 @@ This endpoint allows users to upload a CSV file to update the database.
   - Type: File
   - Value: Choose a valid CSV file
 5. For multiple files (2-5 files at once):
-    Use keys like file1, file2, ..., file5 and set type to File.
+    Use keys files, attach multiple files and set type to File.
 6. Click Send.
 
 💻 Technologies Used
