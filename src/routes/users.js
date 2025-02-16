@@ -14,6 +14,7 @@ const users = require("../data/userData");
 
 
 router.get("/", (req, res) => {
+  console.log("Current Users Data:", users);  // Debugging
   try {
     let { min, max, offset, limit, sort } = req.query;
 
@@ -39,15 +40,12 @@ router.get("/", (req, res) => {
 
     // Sorting logic
     if (sort) {
-      if (sort === "random") {
-        filteredUsers.sort(() => Math.random() - 0.5);
-      }
-      else if (sort === "name") {
+      if (sort === "name") {
         filteredUsers.sort((a, b) => a.name.localeCompare(b.name));
       } else if (sort === "salary") {
         filteredUsers.sort((a, b) => a.salary - b.salary);
       } else {
-        return res.status(400).json({ error: "Invalid sort parameter. Use 'random', 'name', 'salary'." });
+        return res.status(400).json({ error: "Invalid sort parameter. Use 'name', 'salary'." });
       }
     }
 
